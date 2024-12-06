@@ -3,6 +3,7 @@ package builtins
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -24,12 +25,25 @@ func BuiltinHandler(cmd, input string) {
 	case "echo":
 		echoHandler(input)
 	default:
-		fmt.Printf("%s: command not found\n", input[:len(input)-1])
+		if len(strings.Split(input, " ")) > 1 {
+			externalProgramHandler(cmd, input)
+		} else {
+			fmt.Printf("%s: command not found\n", input[:len(input)-1])
+		}
+	}
+}
+
+func externalProgramHandler(cmd, input string) {
+	result, err := exec.Command(cmd, strings.Split(input, " ")...).Output()
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(string(result))
 	}
 }
 
 func typeHandler(input string) {
-
 	_, exists := commands[input[5:len(input)-1]]
 	if exists {
 		fmt.Printf("%s is a shell builtin\n", input[5:len(input)-1])
@@ -42,25 +56,19 @@ func typeHandler(input string) {
 		fp := filepath.Join(path, input[5:len(input)-1])
 
 		if _, err := os.Stat(fp); err == nil {
-
 			fmt.Println(fp)
-
 			return
-
 		}
 	}
 	fmt.Printf("%s: not found\n", input[5:len(input)-1])
 }
 
 func echoHandler(input string) {
-
 	fmt.Printf("%s\n", input[5:len(input)-1])
 }
 
 func exitHandler(input string) {
-	// fmt.Print("Got in exitHandler\n")
 	if input == "exit 0\n" {
-		// fmt.Printf("Goodbye!!")
 		os.Exit(0)
 	}
 }

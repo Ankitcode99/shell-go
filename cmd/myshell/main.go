@@ -17,6 +17,5 @@ func main() {
 	input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
 
 	fmt.Printf("%s: command not found", input[:len(input)-1])
-	// }
 
 }

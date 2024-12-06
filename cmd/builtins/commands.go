@@ -22,14 +22,18 @@ func BuiltinHandler(cmd, input string) {
 	case "echo":
 		echoHandler(input)
 	default:
-		command := exec.Command(strings.Split(input, " ")[0], strings.Split(strings.TrimRight(input, "\n"), " ")[1:]...)
-
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
-
-		err := command.Run()
-		if err != nil {
+		if len(strings.Split(input, " ")) == 1 {
 			fmt.Printf("%s: command not found\n", strings.Split(input, " ")[0])
+		} else {
+			command := exec.Command(strings.Split(input, " ")[0], strings.Split(strings.TrimRight(input, "\n"), " ")[1:]...)
+
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+
+			err := command.Run()
+			if err != nil {
+				fmt.Printf("%s: command not found\n", strings.Split(input, " ")[0])
+			}
 		}
 	}
 }

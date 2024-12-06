@@ -4,20 +4,18 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
+	cmdd "github.com/codecrafters-io/shell-starter-go/cmd/builtins"
 )
 
-// Ensures gofmt doesn't remove the "fmt" import in stage 1 (feel free to remove this!)
-var _ = fmt.Fprint
-
 func main() {
-	// Uncomment this block to pass the first stage
 
-	// Wait for user input
+	// REPL - Wait for user input, evaluates the command and prints the result
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 		input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-
-		fmt.Printf("%s: command not found\n", input[:len(input)-1])
+		cmdd.BuiltinHandler(strings.Split(input, " ")[0], input)
 	}
 
 }

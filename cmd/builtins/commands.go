@@ -25,10 +25,18 @@ func BuiltinHandler(cmd, input string) {
 	case "echo":
 		echoHandler(input)
 	default:
-		if len(strings.Split(input, " ")) > 1 {
-			externalProgramHandler(cmd, input)
-		} else {
-			fmt.Printf("%s: command not found\n", input[:len(input)-1])
+		command := exec.Command(strings.Split(input, " ")[0], strings.Split(input, " ")[1:len(strings.Split(input, " "))]...)
+
+		command.Stdout = os.Stdout
+
+		command.Stderr = os.Stderr
+
+		err := command.Run()
+
+		if err != nil {
+
+			fmt.Fprintf(os.Stdout, "%s: command not found\n", strings.Split(input, " ")[0])
+
 		}
 	}
 }

@@ -14,7 +14,7 @@ type Cmd struct {
 }
 
 var commands = map[string]bool{
-	"exit": true, "type": true, "echo": true, "ls": true, "path": true,
+	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true,
 }
 
 func BuiltinHandler(input string) {
@@ -29,6 +29,8 @@ func BuiltinHandler(input string) {
 		typeHandler(cmd.args)
 	case "echo":
 		echoHandler(cmd.args)
+	case "pwd":
+		pwdHandler()
 	default:
 		command := exec.Command(cmd.command, cmd.args...)
 
@@ -40,6 +42,14 @@ func BuiltinHandler(input string) {
 			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
 		}
 	}
+}
+
+func pwdHandler() {
+	path, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(path)
 }
 
 func typeHandler(input []string) {

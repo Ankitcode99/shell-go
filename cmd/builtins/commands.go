@@ -49,7 +49,7 @@ func typeHandler(input string) {
 
 		}
 	}
-	fmt.Printf("%s not found\n", input[5:len(input)-1])
+	fmt.Printf("%s: not found\n", input[5:len(input)-1])
 }
 
 func echoHandler(input string) {

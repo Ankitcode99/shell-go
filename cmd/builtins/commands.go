@@ -15,7 +15,7 @@ type Cmd struct {
 }
 
 var commands = map[string]bool{
-	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true, "cd": true,
+	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true, "cd": true, "cat": true,
 }
 
 func BuiltinHandler(input string) {
@@ -34,6 +34,8 @@ func BuiltinHandler(input string) {
 		pwdHandler()
 	case "cd":
 		cdHandler(cmd.args)
+	case "cat":
+		catHandler(cmd.args)
 	default:
 		command := exec.Command(cmd.command, cmd.args...)
 
@@ -45,6 +47,24 @@ func BuiltinHandler(input string) {
 			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
 		}
 	}
+}
+
+func catHandler(input []string) {
+	for _, arg := range input {
+		arg = strings.Trim(arg, "'")
+		file, err := os.Open(arg)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer file.Close()
+		content, err := os.ReadFile(arg)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Print(string(content), " ")
+
+	}
+
 }
 
 func cdHandler(input []string) {
@@ -100,6 +120,9 @@ func typeHandler(input []string) {
 }
 
 func echoHandler(input []string) {
+	for i := 0; i < len(input); i++ {
+		input[i] = strings.Trim(input[i], "'")
+	}
 	fmt.Printf("%s\n", strings.Join(input, " "))
 }
 

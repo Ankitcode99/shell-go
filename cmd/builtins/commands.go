@@ -3,12 +3,15 @@ package builtins
 import (
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var commands = map[string]bool{
 	"exit": true,
 	"type": true,
 	"echo": true,
+	"ls":   true,
 }
 
 func BuiltinHandler(cmd, input string) {
@@ -28,11 +31,25 @@ func BuiltinHandler(cmd, input string) {
 func typeHandler(input string) {
 
 	_, exists := commands[input[5:len(input)-1]]
-	if !exists {
-		fmt.Printf("%s: not found\n", input[5:len(input)-1])
-	} else {
+	if exists {
 		fmt.Printf("%s is a shell builtin\n", input[5:len(input)-1])
+		return
 	}
+
+	paths := strings.Split(os.Getenv("PATH"), ":")
+
+	for _, path := range paths {
+		fp := filepath.Join(path, input[5:len(input)-1])
+
+		if _, err := os.Stat(fp); err == nil {
+
+			fmt.Println(fp)
+
+			return
+
+		}
+	}
+	fmt.Printf("%s not found\n", input[5:len(input)-1])
 }
 
 func echoHandler(input string) {

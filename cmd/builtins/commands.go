@@ -48,6 +48,11 @@ func BuiltinHandler(input string) {
 }
 
 func cdHandler(input []string) {
+	if input[0] == "~" {
+		os.Chdir(os.Getenv("HOME"))
+		return
+	}
+
 	p := path.Clean(input[0])
 
 	if !path.IsAbs(p) {

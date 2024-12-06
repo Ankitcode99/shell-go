@@ -29,7 +29,7 @@ func typeHandler(input string) {
 
 	_, exists := commands[input[5:len(input)-1]]
 	if !exists {
-		fmt.Printf("%s: command not found\n", input[5:len(input)-1])
+		fmt.Printf("%s: not found\n", input[5:len(input)-1])
 	} else {
 		fmt.Printf("%s is a shell builtin\n", input[5:len(input)-1])
 	}

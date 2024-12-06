@@ -34,12 +34,14 @@ func BuiltinHandler(cmd, input string) {
 }
 
 func externalProgramHandler(cmd, input string) {
-	result, err := exec.Command(cmd, strings.Split(input, " ")...).Output()
+	command := exec.Command(cmd, strings.Split(input, " ")[1:]...)
+	command.Stderr = os.Stderr
+
+	command.Stdout = os.Stdout
+	err := command.Run()
 
 	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(string(result))
+		fmt.Printf("%s: command not found\n", input[:len(input)-1])
 	}
 }
 

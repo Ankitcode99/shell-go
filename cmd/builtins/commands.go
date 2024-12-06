@@ -21,7 +21,7 @@ func BuiltinHandler(cmd, input string) {
 
 func echoHandler(input string) {
 
-	fmt.Printf("%s\n", input[5:])
+	fmt.Printf("%s\n", input[5:len(input)-1])
 }
 
 func exitHandler(input string) {

@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	cmdd "github.com/codecrafters-io/shell-starter-go/cmd/builtins"
+	handler "github.com/codecrafters-io/shell-starter-go/cmd/builtins"
 )
 
 func main() {
@@ -15,7 +15,8 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 		input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		cmdd.BuiltinHandler(strings.Split(input, " ")[0], input)
+		input = strings.TrimRight(input, "\n")
+		handler.BuiltinHandler(input)
 	}
 
 }

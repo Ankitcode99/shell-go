@@ -8,25 +8,29 @@ import (
 	"strings"
 )
 
-var commands = map[string]bool{
-	"exit": true, "type": true, "echo": true, "ls": true,
+type Cmd struct {
+	command string
+	args    []string
 }
 
-func BuiltinHandler(cmd, input string) {
+var commands = map[string]bool{
+	"exit": true, "type": true, "echo": true, "ls": true, "path": true,
+}
 
-	switch cmd {
+func BuiltinHandler(input string) {
+	cmd := &Cmd{
+		command: strings.Split(input, " ")[0],
+		args:    strings.Split(input, " ")[1:],
+	}
+	switch cmd.command {
 	case "exit":
-		exitHandler(input)
+		exitHandler()
 	case "type":
-		typeHandler(input)
+		typeHandler(cmd.args)
 	case "echo":
-		echoHandler(input)
+		echoHandler(cmd.args)
 	default:
-		// fmt.Printf("Command length is %d\n", len(strings.Split(input, " ")))
-		// if len(strings.Split(strings.TrimRight(input, "\n"), " ")) == 1 {
-		// 	fmt.Printf("%s: command not found\n", strings.Split(input, " ")[0])
-		// } else {
-		command := exec.Command(strings.Split(input, " ")[0], strings.Split(strings.TrimRight(input, "\n"), " ")[1:]...)
+		command := exec.Command(cmd.command, cmd.args...)
 
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
@@ -35,36 +39,33 @@ func BuiltinHandler(cmd, input string) {
 		if err != nil {
 			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
 		}
-		// }
 	}
 }
 
-func typeHandler(input string) {
-	_, exists := commands[input[5:len(input)-1]]
+func typeHandler(input []string) {
+	_, exists := commands[input[0]]
 	if exists {
-		fmt.Printf("%s is a shell builtin\n", input[5:len(input)-1])
+		fmt.Printf("%s is a shell builtin\n", input[0])
 		return
 	}
 
 	paths := strings.Split(os.Getenv("PATH"), ":")
 
 	for _, path := range paths {
-		fp := filepath.Join(path, input[5:len(input)-1])
+		fp := filepath.Join(path, input[0])
 
 		if _, err := os.Stat(fp); err == nil {
 			fmt.Println(fp)
 			return
 		}
 	}
-	fmt.Printf("%s: not found\n", input[5:len(input)-1])
+	fmt.Printf("%s: not found\n", input[0])
 }
 
-func echoHandler(input string) {
-	fmt.Printf("%s\n", input[5:len(input)-1])
+func echoHandler(input []string) {
+	fmt.Printf("%s\n", strings.Join(input, " "))
 }
 
-func exitHandler(input string) {
-	if input == "exit 0\n" {
-		os.Exit(0)
-	}
+func exitHandler() {
+	os.Exit(0)
 }

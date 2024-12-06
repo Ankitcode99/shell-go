@@ -14,7 +14,7 @@ type Cmd struct {
 }
 
 var commands = map[string]bool{
-	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true,
+	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true, "cd": true,
 }
 
 func BuiltinHandler(input string) {
@@ -31,6 +31,8 @@ func BuiltinHandler(input string) {
 		echoHandler(cmd.args)
 	case "pwd":
 		pwdHandler()
+	case "cd":
+		cdHandler(cmd.args)
 	default:
 		command := exec.Command(cmd.command, cmd.args...)
 
@@ -41,6 +43,13 @@ func BuiltinHandler(input string) {
 		if err != nil {
 			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
 		}
+	}
+}
+
+func cdHandler(input []string) {
+	err := os.Chdir(input[0])
+	if err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", input[0])
 	}
 }
 

@@ -9,10 +9,7 @@ import (
 )
 
 var commands = map[string]bool{
-	"exit": true,
-	"type": true,
-	"echo": true,
-	"ls":   true,
+	"exit": true, "type": true, "echo": true, "ls": true,
 }
 
 func BuiltinHandler(cmd, input string) {
@@ -25,31 +22,15 @@ func BuiltinHandler(cmd, input string) {
 	case "echo":
 		echoHandler(input)
 	default:
-		command := exec.Command(strings.Split(input, " ")[0], strings.Split(input, " ")[1:len(strings.Split(input, " "))]...)
+		command := exec.Command(strings.Split(input, " ")[0], strings.Split(input, " ")[1:]...)
 
 		command.Stdout = os.Stdout
-
 		command.Stderr = os.Stderr
 
 		err := command.Run()
-
 		if err != nil {
-
-			fmt.Fprintf(os.Stdout, "%s: command not found\n", strings.Split(input, " ")[0])
-
+			fmt.Printf("%s: command not found\n", strings.Split(input, " ")[0])
 		}
-	}
-}
-
-func externalProgramHandler(cmd, input string) {
-	command := exec.Command(cmd, strings.Split(input, " ")[1:]...)
-	command.Stderr = os.Stderr
-
-	command.Stdout = os.Stdout
-	err := command.Run()
-
-	if err != nil {
-		fmt.Printf("%s: command not found\n", input[:len(input)-1])
 	}
 }
 

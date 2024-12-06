@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -47,9 +48,21 @@ func BuiltinHandler(input string) {
 }
 
 func cdHandler(input []string) {
-	err := os.Chdir(input[0])
+	p := path.Clean(input[0])
+
+	if !path.IsAbs(p) {
+
+		dir, _ := os.Getwd()
+
+		p = path.Join(dir, p)
+
+	}
+
+	err := os.Chdir(p)
 	if err != nil {
-		fmt.Printf("cd: %s: No such file or directory\n", input[0])
+
+		fmt.Printf("cd: %s: No such file or directory\n", p)
+
 	}
 }
 

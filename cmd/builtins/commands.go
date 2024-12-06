@@ -22,7 +22,7 @@ func BuiltinHandler(cmd, input string) {
 	case "echo":
 		echoHandler(input)
 	default:
-		command := exec.Command(strings.Split(input, " ")[0], strings.Split(input, " ")[1:]...)
+		command := exec.Command(strings.Split(input, " ")[0], strings.Split(strings.TrimRight(input, "\n"), " ")[1:]...)
 
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr

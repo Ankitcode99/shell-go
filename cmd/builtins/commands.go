@@ -121,15 +121,23 @@ func typeHandler(input []string) {
 
 func echoHandler(input []string) {
 	var inputs []string
-	for i := 0; i < len(input); i++ {
-		input[i] = strings.Trim(input[i], "'")
-		// fmt.Printf("%d - %s - %d\n", i, input[i], len(input[i]))
-		if len(input[i]) > 0 {
-			// fmt.Print("\nRemoving space!\n")
-			inputs = append(inputs, input[i])
+	if input[0][0] == '\'' {
+		for i := 0; i < len(input); i++ {
+			input[i] = strings.Trim(input[i], "'")
 		}
+		fmt.Printf("%s\n", strings.Join(input, " "))
+	} else {
+		for i := 0; i < len(input); i++ {
+			input[i] = strings.Trim(input[i], "'")
+			// fmt.Printf("%d - %s - %d\n", i, input[i], len(input[i]))
+			if len(input[i]) > 0 {
+				// fmt.Print("\nRemoving space!\n")
+				inputs = append(inputs, input[i])
+			}
+		}
+		fmt.Printf("%s\n", strings.Join(inputs, " "))
 	}
-	fmt.Printf("%s\n", strings.Join(inputs, " "))
+
 }
 
 func exitHandler() {

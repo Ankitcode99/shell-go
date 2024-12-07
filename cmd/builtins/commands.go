@@ -17,7 +17,7 @@ type Cmd struct {
 }
 
 var commands = map[string]bool{
-	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true, "cd": true, "cat": true,
+	"exit": true, "type": true, "echo": true, "ls": true, "path": true, "pwd": true, "cd": true, // "cat": true,
 }
 
 func BuiltinHandler(input string) {

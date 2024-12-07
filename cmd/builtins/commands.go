@@ -61,6 +61,8 @@ func catHandler(input string) {
 			fmt.Print("Something went wrong")
 		}
 		fmt.Print(string(fileContent))
+
+		// fmt.Printf("%s\n", filePath)
 	}
 }
 

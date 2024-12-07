@@ -8,10 +8,12 @@ func ParseInput(input string) []string {
 	var parts []string
 	var current strings.Builder
 	inQuotes := false
-	quoteChar := ' ' // Track which quote character is currently open
+	quoteChar := ' '    // Track which quote character is currently open
+	escapeNext := false // Flag to indicate if the next character should be treated as escaped
 
 	for i := 0; i < len(input); i++ {
 		char := rune(input[i])
+		// fmt.Printf("%d - %c\n", i, char)
 		switch char {
 		case '"', '\'':
 			if !inQuotes {
@@ -33,24 +35,32 @@ func ParseInput(input string) []string {
 			}
 		case '\\':
 			if inQuotes {
-				if i+1 < len(input) {
-					nextChar := rune(input[i+1])
-					if nextChar == '\\' { // Handle double backslash
-						current.WriteRune('\\')
-						i++ // Skip the next backslash
-					} else {
-						current.WriteRune(nextChar) // Write the next character as is
-						i++                         // Skip the next character since it's escaped
-					}
-				}
-			} else {
-				if i+1 < len(input) {
-					current.WriteRune(rune(input[i+1])) // Write the next character as is
+				// fmt.Printf(" INSIDE inQuotes \n")
+				if i+1 < len(input) && (input[i+1] == '\\' || input[i+1] == '$' || input[i+1] == '\n' || input[i+1] == '\'' || input[i+1] == '"') {
+					// fmt.Printf(" INSIDE ESCAPE \n")
+					current.WriteRune(rune(input[i+1])) // Write the next character as is (escaped)
 					i++                                 // Skip the next character since it's escaped
+				} else {
+					current.WriteRune(char)
+				}
+				escapeNext = true // Set flag to escape the next character within quotes
+			} else {
+				// fmt.Printf("%d - %c\n", i, char)
+				if i+1 < len(input) && (input[i+1] == '\\' || input[i+1] == '$' || input[i+1] == '\n' || input[i+1] == '\'' || input[i+1] == '"') {
+					// fmt.Printf(" INSIDE ESCAPE \n")
+					current.WriteRune(rune(input[i+1])) // Write the next character as is (escaped)
+					i++                                 // Skip the next character since it's escaped
+				} else {
+					current.WriteRune(char)
 				}
 			}
 		default:
-			current.WriteRune(char) // Add character to current part
+			if escapeNext {
+				current.WriteRune(char) // Add the escaped character directly
+				escapeNext = false      // Reset escape flag
+			} else {
+				current.WriteRune(char) // Add regular character to current part
+			}
 		}
 	}
 

@@ -1,6 +1,8 @@
 package helpers
 
-import "strings"
+import (
+	"strings"
+)
 
 func ParseInput(input string) []string {
 	var parts []string
@@ -31,11 +33,20 @@ func ParseInput(input string) []string {
 			}
 		case '\\':
 			if inQuotes {
-				current.WriteRune(char)
+				if i+1 < len(input) {
+					nextChar := rune(input[i+1])
+					if nextChar == '\\' { // Handle double backslash
+						current.WriteRune('\\')
+						i++ // Skip the next backslash
+					} else {
+						current.WriteRune(nextChar) // Write the next character as is
+						i++                         // Skip the next character since it's escaped
+					}
+				}
 			} else {
 				if i+1 < len(input) {
-					current.WriteRune(rune(input[i+1]))
-					i++
+					current.WriteRune(rune(input[i+1])) // Write the next character as is
+					i++                                 // Skip the next character since it's escaped
 				}
 			}
 		default:

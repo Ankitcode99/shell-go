@@ -38,10 +38,13 @@ func ParseInput(input string) []string {
 				// fmt.Printf(" INSIDE inQuotes \n")
 				if i+1 < len(input) && (input[i+1] == '\\' || input[i+1] == '$' || input[i+1] == '\n' || input[i+1] == '\'' || input[i+1] == '"') {
 					// fmt.Printf(" INSIDE ESCAPE \n")
-					current.WriteRune(rune(input[i+1])) // Write the next character as is (escaped)
+					// Write the next character as is (escaped)
 					if quoteChar == '"' {
+						current.WriteRune(rune(input[i+1]))
 						i++
-					} // Skip the next character since it's escaped
+					} else {
+						current.WriteRune(rune(input[i]))
+					}
 				} else {
 					current.WriteRune(char)
 				}

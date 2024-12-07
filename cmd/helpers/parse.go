@@ -8,7 +8,8 @@ func ParseInput(input string) []string {
 	inQuotes := false
 	quoteChar := ' ' // Track which quote character is currently open
 
-	for _, char := range input {
+	for i := 0; i < len(input); i++ {
+		char := rune(input[i])
 		switch char {
 		case '"', '\'':
 			if !inQuotes {
@@ -26,6 +27,15 @@ func ParseInput(input string) []string {
 				if current.Len() > 0 {
 					parts = append(parts, current.String())
 					current.Reset()
+				}
+			}
+		case '\\':
+			if inQuotes {
+				current.WriteRune(char)
+			} else {
+				if i+1 < len(input) {
+					current.WriteRune(rune(input[i+1]))
+					i++
 				}
 			}
 		default:

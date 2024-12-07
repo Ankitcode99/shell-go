@@ -8,22 +8,29 @@ func ParseInput(input string) []string {
 	var parts []string
 	var current strings.Builder
 	inQuotes := false
-	quoteChar := ' '    // Track which quote character is currently open
-	escapeNext := false // Flag to indicate if the next character should be treated as escaped
+	var quoteChar []rune // Track which quote character is currently open
+	escapeNext := false  // Flag to indicate if the next character should be treated as escaped
 
 	for i := 0; i < len(input); i++ {
 		char := rune(input[i])
-		// fmt.Printf("%d - %c\n", i, char)
+		// fmt.Printf("%d - %t - %v\n", i, inQuotes, quoteChar)
 		switch char {
 		case '"', '\'':
 			if !inQuotes {
 				inQuotes = true
-				quoteChar = char // Set the current quote character
-			} else if char == quoteChar {
-				inQuotes = false // Close the current quote
+				quoteChar = append([]rune{char}, quoteChar...) // Set the current quote character
+			} else if char == quoteChar[0] {
+				if len(quoteChar) > 1 {
+					quoteChar = quoteChar[1:]
+				} else {
+					inQuotes = false
+				}
+				// Close the current quote
 			} else {
 				current.WriteRune(char) // Keep different quote types inside
+				quoteChar = append([]rune{char}, quoteChar...)
 			}
+
 		case ' ':
 			if inQuotes {
 				current.WriteRune(char) // Keep spaces inside quotes
@@ -39,7 +46,7 @@ func ParseInput(input string) []string {
 				if i+1 < len(input) && (input[i+1] == '\\' || input[i+1] == '$' || input[i+1] == '\n' || input[i+1] == '\'' || input[i+1] == '"') {
 					// fmt.Printf(" INSIDE ESCAPE \n")
 					// Write the next character as is (escaped)
-					if quoteChar == '"' {
+					if quoteChar[0] == '"' {
 						current.WriteRune(rune(input[i+1]))
 						i++
 					} else {

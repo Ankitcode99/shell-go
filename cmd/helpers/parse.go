@@ -39,7 +39,9 @@ func ParseInput(input string) []string {
 				if i+1 < len(input) && (input[i+1] == '\\' || input[i+1] == '$' || input[i+1] == '\n' || input[i+1] == '\'' || input[i+1] == '"') {
 					// fmt.Printf(" INSIDE ESCAPE \n")
 					current.WriteRune(rune(input[i+1])) // Write the next character as is (escaped)
-					i++                                 // Skip the next character since it's escaped
+					if quoteChar == '"' {
+						i++
+					} // Skip the next character since it's escaped
 				} else {
 					current.WriteRune(char)
 				}

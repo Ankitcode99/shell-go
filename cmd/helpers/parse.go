@@ -1,10 +1,6 @@
 package helpers
 
-import (
-	"fmt"
-
-	"github.com/buildkite/shellwords"
-)
+import "strings"
 
 func ParseInput(input string) []string {
 	// var parts []string
@@ -105,17 +101,65 @@ func ParseInput(input string) []string {
 	// 	parts = append(parts, current.String())
 	// }
 
-	words, err := shellwords.Split(input)
+	// words, err := shellwords.Split(input)
 
-	if err != nil {
-		fmt.Println("Error parsing command:", err)
-		return []string{}
-	}
+	// if err != nil {
+	// 	fmt.Println("Error parsing command:", err)
+	// 	return []string{}
+	// }
 
 	// Print the parsed words
 	// for _, word := range words {
 	// 	fmt.Println(word)
 	// }
 
-	return words
+	// return words
+	var result []string
+	var current strings.Builder
+	inSingleQuote := false
+	inDoubleQuote := false
+
+	for i := 0; i < len(input); i++ {
+		char := input[i]
+
+		switch char {
+		case '\'':
+			if inDoubleQuote {
+				current.WriteByte(char) // Inside double quotes, treat as normal
+			} else {
+				inSingleQuote = !inSingleQuote // Toggle single quote state
+				if !inSingleQuote {            // If closing single quote
+					result = append(result, current.String())
+					current.Reset()
+				}
+			}
+		case '"':
+			if inSingleQuote {
+				current.WriteByte(char) // Inside single quotes, treat as normal
+			} else {
+				inDoubleQuote = !inDoubleQuote // Toggle double quote state
+				if !inDoubleQuote {            // If closing double quote
+					result = append(result, current.String())
+					current.Reset()
+				}
+			}
+		case ' ':
+			if inSingleQuote || inDoubleQuote {
+				current.WriteByte(char) // Inside quotes, keep spaces
+			} else if current.Len() > 0 {
+				result = append(result, current.String())
+				current.Reset() // Reset for the next word
+			}
+		default:
+			current.WriteByte(char) // Normal character
+		}
+	}
+
+	// Add any remaining text after the loop
+	if current.Len() > 0 {
+		result = append(result, current.String())
+	}
+
+	return result
+
 }

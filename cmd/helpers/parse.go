@@ -113,9 +113,9 @@ func ParseInput(input string) []string {
 	}
 
 	// Print the parsed words
-	for _, word := range words {
-		fmt.Println(word)
-	}
+	// for _, word := range words {
+	// 	fmt.Println(word)
+	// }
 
 	return words
 }

@@ -32,7 +32,7 @@ func BuiltinHandler(input string) {
 	case "type":
 		typeHandler(cmd.args)
 	case "echo":
-		echoHandler(cmd.args)
+		echoHandler(helper.ParseInput(input)[1:])
 	case "pwd":
 		pwdHandler()
 	case "cd":

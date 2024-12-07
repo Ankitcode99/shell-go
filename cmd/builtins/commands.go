@@ -7,6 +7,8 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	helper "github.com/codecrafters-io/shell-starter-go/cmd/helpers"
 )
 
 type Cmd struct {
@@ -23,6 +25,7 @@ func BuiltinHandler(input string) {
 		command: strings.Split(input, " ")[0],
 		args:    strings.Split(input, " ")[1:],
 	}
+
 	switch cmd.command {
 	case "exit":
 		exitHandler()
@@ -35,7 +38,7 @@ func BuiltinHandler(input string) {
 	case "cd":
 		cdHandler(cmd.args)
 	case "cat":
-		catHandler(cmd.args)
+		catHandler(input)
 	default:
 		command := exec.Command(cmd.command, cmd.args...)
 
@@ -49,22 +52,16 @@ func BuiltinHandler(input string) {
 	}
 }
 
-func catHandler(input []string) {
-	for _, arg := range input {
-		arg = strings.Trim(arg, "'")
-		file, err := os.Open(arg)
-		if err != nil {
-			fmt.Println(err)
-		}
-		defer file.Close()
-		content, err := os.ReadFile(arg)
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Print(string(content), " ")
+func catHandler(input string) {
+	parsedInput := helper.ParseInput(input)[1:]
+	for _, filePath := range parsedInput {
+		fileContent, err := os.ReadFile(filePath)
 
+		if err != nil {
+			fmt.Print("Something went wrong")
+		}
+		fmt.Print(string(fileContent))
 	}
-
 }
 
 func cdHandler(input []string) {

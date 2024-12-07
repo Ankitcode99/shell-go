@@ -32,7 +32,7 @@ func BuiltinHandler(input string) {
 	case "type":
 		typeHandler(cmd.args)
 	case "echo":
-		echoHandler(helper.ParseInput(input)[1:])
+		echoHandler(helper.ParseInput(input))
 	case "pwd":
 		pwdHandler()
 	case "cd":
@@ -53,7 +53,7 @@ func BuiltinHandler(input string) {
 }
 
 func catHandler(input string) {
-	parsedInput := helper.ParseInput(input)[1:]
+	parsedInput := helper.ParseInput(input)
 	for _, filePath := range parsedInput {
 		fileContent, err := os.ReadFile(filePath)
 

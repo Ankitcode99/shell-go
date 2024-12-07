@@ -15,7 +15,7 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 		input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
-		input = strings.TrimRight(input, "\n")
+		input = strings.TrimRight(input, "\r\n")
 		handler.BuiltinHandler(input)
 	}
 

@@ -44,20 +44,37 @@ func BuiltinHandler(input string) {
 	case "cat":
 		catHandler(input)
 	default:
-		command := exec.Command(cmd.command, cmd.args...)
+		if input[0] == '\'' || input[0] == '"' {
+			// fmt.Printf("INSIDE CUSTOM EXEC\n")
+			ch := input[0]
+			st := 0
+			for i := 1; i < len(input); i++ {
+				if (input[i] == '\'' || input[i] == '"') && ch == input[i] {
+					st = i + 1
+					break
+				}
+			}
 
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
+			newInput := "cat " + input[st+1:]
+			// fmt.Printf("%s\n", newInput)
+			catHandler(newInput)
+		} else {
+			command := exec.Command(cmd.command, cmd.args...)
 
-		err := command.Run()
-		if err != nil {
-			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+
+			err := command.Run()
+			if err != nil {
+				fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
+			}
 		}
 	}
 }
 
 func catHandler(input string) {
 	parsedInput := helper.ParseInput(input)[1:]
+	// fmt.Printf("Parsed Input: %#v\n", parsedInput)
 	for _, filePath := range parsedInput {
 		fileContent, err := os.ReadFile(filePath)
 

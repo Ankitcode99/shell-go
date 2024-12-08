@@ -21,10 +21,14 @@ var commands = map[string]bool{
 }
 
 func BuiltinHandler(input string) {
-	cmd := &Cmd{
-		command: strings.Split(input, " ")[0],
-		args:    strings.Split(input, " ")[1:],
+	helperRes := helper.TokenizeInput(input)
+
+	cmd := Cmd{
+		command: string(helperRes[0]),
+		args:    helperRes[1:], //helper.ParseInput(input)[1:],
 	}
+
+	// fmt.Printf("%#v\n", cmd)
 
 	switch cmd.command {
 	case "exit":
@@ -53,7 +57,7 @@ func BuiltinHandler(input string) {
 }
 
 func catHandler(input string) {
-	parsedInput := helper.ParseInput(input)
+	parsedInput := helper.ParseInput(input)[1:]
 	for _, filePath := range parsedInput {
 		fileContent, err := os.ReadFile(filePath)
 

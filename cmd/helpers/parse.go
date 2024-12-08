@@ -70,3 +70,66 @@ func ParseInput(input string) []string {
 
 	return args
 }
+
+func TokenizeInput(input string) []string {
+	args := make([]string, 2)
+
+	var delim byte = ' '
+
+	var stopIndex, continueIndex int
+
+	var delimpresent bool
+
+	for i := range input {
+
+		if i == 0 {
+
+			if input[i] == '\'' || input[i] == '"' {
+
+				delim = input[i]
+
+			}
+
+			continue
+
+		}
+
+		if input[i] == delim {
+
+			switch delim {
+
+			case ' ':
+
+				stopIndex = i
+
+				continueIndex = i + 1
+
+			default:
+
+				stopIndex = i + 1
+
+				continueIndex = stopIndex + 1
+
+			}
+
+			delimpresent = true
+
+			break
+
+		}
+
+	}
+	if !delimpresent {
+
+		stopIndex = len(input)
+
+		continueIndex = stopIndex
+
+	}
+
+	args[0] = input[:stopIndex]
+
+	args[1] = input[continueIndex:]
+
+	return args
+}

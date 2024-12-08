@@ -74,7 +74,7 @@ func BuiltinHandler(input string) {
 }
 
 func catHandler(input string) {
-	parsedInput := helper.ParseInput(input)[1:]
+	parsedInput := helper.ParseInput(input)
 	// fmt.Printf("Parsed Input: %#v\n", parsedInput)
 	for _, filePath := range parsedInput {
 		fileContent, err := os.ReadFile(filePath)

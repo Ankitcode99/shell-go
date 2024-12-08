@@ -25,10 +25,8 @@ func BuiltinHandler(input string) {
 
 	cmd := Cmd{
 		command: string(helperRes[0]),
-		args:    helperRes[1:], //helper.ParseInput(input)[1:],
+		args:    helperRes[1:],
 	}
-
-	// fmt.Printf("%#v\n", cmd)
 
 	switch cmd.command {
 	case "exit":
@@ -45,7 +43,6 @@ func BuiltinHandler(input string) {
 		catHandler(input)
 	default:
 		if input[0] == '\'' || input[0] == '"' {
-			// fmt.Printf("INSIDE CUSTOM EXEC\n")
 			ch := input[0]
 			st := 0
 			for i := 1; i < len(input); i++ {
@@ -57,8 +54,6 @@ func BuiltinHandler(input string) {
 
 			cmd.command = input[1:st]
 		}
-
-		// fmt.Printf("%#v\n", cmd)
 
 		command := exec.Command(cmd.command, cmd.args...)
 
@@ -75,7 +70,6 @@ func BuiltinHandler(input string) {
 
 func catHandler(input string) {
 	parsedInput := helper.ParseInput(input)
-	// fmt.Printf("Parsed Input: %#v\n", parsedInput)
 	for _, filePath := range parsedInput {
 		fileContent, err := os.ReadFile(filePath)
 
@@ -83,8 +77,6 @@ func catHandler(input string) {
 			fmt.Print("Something went wrong")
 		}
 		fmt.Print(string(fileContent))
-
-		// fmt.Printf("%s\n", filePath)
 	}
 }
 

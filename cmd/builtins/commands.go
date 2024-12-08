@@ -50,25 +50,24 @@ func BuiltinHandler(input string) {
 			st := 0
 			for i := 1; i < len(input); i++ {
 				if (input[i] == '\'' || input[i] == '"') && ch == input[i] {
-					st = i + 1
+					st = i
 					break
 				}
 			}
 
-			newInput := "cat " + input[st+1:]
-			// fmt.Printf("%s\n", newInput)
-			catHandler(newInput)
-		} else {
-			command := exec.Command(cmd.command, cmd.args...)
-
-			command.Stdout = os.Stdout
-			command.Stderr = os.Stderr
-
-			err := command.Run()
-			if err != nil {
-				fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
-			}
+			cmd.command = input[0:st]
 		}
+
+		command := exec.Command(cmd.command, cmd.args...)
+
+		command.Stdout = os.Stdout
+		command.Stderr = os.Stderr
+
+		err := command.Run()
+		if err != nil {
+			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
+		}
+
 	}
 }
 

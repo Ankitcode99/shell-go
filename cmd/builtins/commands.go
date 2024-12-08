@@ -67,7 +67,7 @@ func BuiltinHandler(input string) {
 
 		err := command.Run()
 		if err != nil {
-			fmt.Printf("%s: command not found\n", strings.Split(strings.TrimRight(input, "\n"), " ")[0])
+			fmt.Printf("%s: command not found\n", cmd.command)
 		}
 
 	}

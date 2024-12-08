@@ -58,6 +58,8 @@ func BuiltinHandler(input string) {
 			cmd.command = input[0:st]
 		}
 
+		fmt.Printf("%#v\n", cmd)
+
 		command := exec.Command(cmd.command, cmd.args...)
 
 		command.Stdout = os.Stdout

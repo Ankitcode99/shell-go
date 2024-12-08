@@ -55,7 +55,7 @@ func BuiltinHandler(input string) {
 				}
 			}
 
-			cmd.command = input[0 : st+1]
+			cmd.command = input[1:st]
 		}
 
 		fmt.Printf("%#v\n", cmd)
